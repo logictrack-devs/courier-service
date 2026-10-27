@@ -2,6 +2,8 @@ package ar.edu.unju.fi.arquitecturas.courierservice.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration; // AGREGADA
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity; // AGREGADA
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -15,7 +17,10 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
+@Configuration          // NO TE OLVIDES DE ESTA
+@EnableMethodSecurity   // Y DE ESTA
 public class SecurityConfig {
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -23,12 +28,14 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/envios/**").hasAnyRole("CLIENTE","REPARTIDOR","ADMIN")
+                        // ACÁ PUSE TUS RUTAS DE REPARTIDORES
+                        .requestMatchers("/api/repartidores/**").hasAnyRole("REPARTIDOR", "ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(o -> o.jwt(j ->
                         j.jwtAuthenticationConverter(converter())))
                 .build();
     }
+
     @Bean
     JwtAuthenticationConverter converter() {
         var authorities = new JwtGrantedAuthoritiesConverter();
@@ -38,8 +45,10 @@ public class SecurityConfig {
         c.setJwtGrantedAuthoritiesConverter(authorities);
         return c;
     }
+
     @Value("classpath:certs/public.pem")
     private org.springframework.core.io.Resource publicKeyResource;
+
     @Bean
     public JwtDecoder jwtDecoder() throws Exception {
         String key = new String(publicKeyResource.getInputStream().readAllBytes())
