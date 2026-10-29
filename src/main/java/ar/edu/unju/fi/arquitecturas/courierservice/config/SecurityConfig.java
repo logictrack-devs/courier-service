@@ -2,8 +2,8 @@ package ar.edu.unju.fi.arquitecturas.courierservice.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration; // AGREGADA
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity; // AGREGADA
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -17,8 +17,8 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
-@Configuration          // NO TE OLVIDES DE ESTA
-@EnableMethodSecurity   // Y DE ESTA
+@Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -28,8 +28,8 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        // ACÁ PUSE TUS RUTAS DE REPARTIDORES
-                        .requestMatchers("/api/repartidores/**").hasAnyRole("REPARTIDOR", "ADMIN")
+                        // CORRECCIÓN: Ruta actualizada a v1 y acceso permitido para que shipment-service pueda consumirlo
+                        .requestMatchers("/api/v1/repartidores/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(o -> o.jwt(j ->
                         j.jwtAuthenticationConverter(converter())))
