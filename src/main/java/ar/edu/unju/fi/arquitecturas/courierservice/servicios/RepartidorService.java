@@ -3,6 +3,7 @@ package ar.edu.unju.fi.arquitecturas.courierservice.servicios;
 
 import ar.edu.unju.fi.arquitecturas.courierservice.dto.request.RepartidorRequestDto;
 import ar.edu.unju.fi.arquitecturas.courierservice.dto.response.RepartidorResponseDto;
+import ar.edu.unju.fi.arquitecturas.courierservice.enums.EstadoRepartidor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -53,11 +54,20 @@ public interface RepartidorService {
     RepartidorResponseDto obtenerPorId(UUID id);
 
     /**
-     * Asigna un repartidor activo a un envio determinado.
+     * Actualiza los datos (nombre y tipo de vehículo) de un repartidor.
      *
-     * @param repartidorId ID del repartidor a asignar.
-     * @param envioId ID del envio al cual se le asignara el repartidor.
-     * @return DTO del repartidor asignado.
+     * @param id      ID del repartidor a actualizar.
+     * @param request nuevos datos del repartidor.
+     * @return DTO con la información actualizada.
      */
+    RepartidorResponseDto actualizar(UUID id, RepartidorRequestDto request);
 
+    /**
+     * Cambia el estado operativo de un repartidor (ACTIVO / INACTIVO).
+     *
+     * @param id     ID del repartidor.
+     * @param estado nuevo estado.
+     * @return DTO con el estado actualizado.
+     */
+    RepartidorResponseDto cambiarEstado(UUID id, EstadoRepartidor estado);
 }
