@@ -56,4 +56,15 @@ public class RepartidorController {
         boolean disponible = (repartidor != null && repartidor.getEstado() == EstadoRepartidor.ACTIVO);
         return ResponseEntity.ok(disponible);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<RepartidorResponseDto> actualizar(@PathVariable UUID id,
+                                                            @Valid @RequestBody RepartidorRequestDto request) {
+        return ResponseEntity.ok(repartidorService.actualizar(id, request));
+    }
+
+    @PatchMapping("/{id}/estado")
+    public ResponseEntity<RepartidorResponseDto> cambiarEstado(@PathVariable UUID id, @RequestParam EstadoRepartidor estado) {
+        return ResponseEntity.ok(repartidorService.cambiarEstado(id, estado));
+    }
 }
