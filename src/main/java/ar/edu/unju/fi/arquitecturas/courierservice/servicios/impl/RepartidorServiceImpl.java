@@ -62,6 +62,28 @@ public class RepartidorServiceImpl implements RepartidorService {
         return mapearADto(repartidor);
     }
 
+    @Override
+    @Transactional
+    public RepartidorResponseDto actualizar(UUID id, RepartidorRequestDto request) {
+        Repartidor repartidor = buscarOLanzar(id);
+        repartidor.setNombre(request.getNombre());
+        repartidor.setTipoVehiculo(request.getTipoVehiculo());
+        return mapearADto(repartidorRepository.save(repartidor));
+    }
+
+    @Override
+    @Transactional
+    public RepartidorResponseDto cambiarEstado(UUID id, EstadoRepartidor estado) {
+        Repartidor repartidor = buscarOLanzar(id);
+        repartidor.setEstado(estado);
+        return mapearADto(repartidorRepository.save(repartidor));
+    }
+
+    private Repartidor buscarOLanzar(UUID id) {
+        return repartidorRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró el repartidor con el ID: " + id));
+    }
+
 
     private RepartidorResponseDto mapearADto(Repartidor repartidor) {
         return RepartidorResponseDto.builder()

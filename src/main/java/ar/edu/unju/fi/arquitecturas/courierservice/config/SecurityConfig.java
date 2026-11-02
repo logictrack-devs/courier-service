@@ -3,6 +3,7 @@ package ar.edu.unju.fi.arquitecturas.courierservice.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -27,9 +28,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/actuator/health/**", "/error").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        // CORRECCIÓN: Ruta actualizada a v1 y acceso permitido para que shipment-service pueda consumirlo
-                        .requestMatchers("/api/v1/repartidores/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/repartidores/**")
+                        .hasAnyRole("ADMIN", "REPARTIDOR")
+                        .requestMatchers("/api/v1/repartidores/**")
+                        .hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(o -> o.jwt(j ->
                         j.jwtAuthenticationConverter(converter())))
