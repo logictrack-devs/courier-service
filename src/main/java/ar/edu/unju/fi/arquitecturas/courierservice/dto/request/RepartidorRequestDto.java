@@ -1,6 +1,7 @@
 package ar.edu.unju.fi.arquitecturas.courierservice.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 /**
@@ -22,6 +23,7 @@ import lombok.*;
 public class RepartidorRequestDto {
 
     @NotBlank(message = "El nombre del repartidor es obligatorio.")
+    @Size(max = 100, message = "El nombre no puede superar los 100 caracteres.")
     private String nombre;
 
     @NotBlank(message = "El tipo de vehiculo es obligatorio.")

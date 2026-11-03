@@ -44,7 +44,7 @@ public class Repartidor extends Auditable{
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "nombre", nullable = false, length=20)
+    @Column(name = "nombre", nullable = false, length=100)
     private String nombre;
 
     @Column(name = "tipo_vehiculo", nullable = false, length=50)
